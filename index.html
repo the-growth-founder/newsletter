@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Growth Founder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --gold: #c9a84c;
+      --gold-light: #e8c878;
+      --text: #f0ede6;
+      --muted: #888;
+      --accent: #c9a84c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 4rem;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
+      margin-bottom: 2rem;
+      display: inline-block;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    /* SIGNUP FORM */
+    .signup-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      width: 100%;
+      animation: fadeUp 0.8s 0.3s ease both;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .signup-form input {
+      flex: 1;
+      background: var(--surface);
+      border: none;
+      outline: none;
+      padding: 1rem 1.4rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .signup-form input::placeholder { color: var(--muted); }
+
+    .signup-form button {
+      background: var(--gold);
+      color: #0d0d0d;
+      border: none;
+      padding: 1rem 1.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+
+    .signup-form button:hover { background: var(--gold-light); }
+
+    .hero-meta {
+      margin-top: 1.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .success-msg {
+      display: none;
+      color: var(--gold);
+      font-size: 0.9rem;
+      margin-top: 1rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      gap: 5rem;
+      padding: 2.5rem 2rem;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ABOUT SECTION */
+    #about {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .about-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-visual {
+      position: relative;
+      aspect-ratio: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .about-visual::before {
+      content: '';
+      position: absolute;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(201,168,76,0.15), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .about-monogram {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--gold);
+      opacity: 0.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* PAST ISSUES */
+    #issues {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 7rem 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 4rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .issues-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .issue-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .issue-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    .issue-num {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+    }
+
+    .issue-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.8rem;
+    }
+
+    .issue-excerpt {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .issue-date {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* BOTTOM CTA */
+    .bottom-cta {
+      text-align: center;
+      padding: 7rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bottom-cta::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06), transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .bottom-cta h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .bottom-cta h2 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .bottom-cta p {
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .cta-form {
+      display: flex;
+      gap: 0;
+      max-width: 440px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-form input {
+      flex: 1;
+      background: var(--surface);
+      border: none;
+      outline: none;
+      padding: 1rem 1.4rem;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .cta-form input::placeholder { color: var(--muted); }
+
+    .cta-form button {
+      background: var(--gold);
+      color: #0d0d0d;
+      border: none;
+      padding: 1rem 1.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .cta-form button:hover { background: var(--gold-light); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: var(--gold); }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      color: var(--gold);
+      font-size: 1rem;
+    }
+
+    /* DIVIDER */
+    .gold-line {
+      width: 60px;
+      height: 2px;
+      background: var(--gold);
+      margin: 1.5rem 0;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      #about { grid-template-columns: 1fr; gap: 3rem; }
+      .about-visual { display: none; }
+      .stats-bar { gap: 2rem; flex-wrap: wrap; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">The Growth Founder</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#issues">Issues</a></li>
+    <li><a href="#subscribe">Subscribe</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <span class="hero-tag">Newsletter · Bangla & English</span>
+  <h1>Grow Smarter.<br/><em>Build Bolder.</em></h1>
+  <p class="hero-sub">
+    প্রতি সপ্তাহে business strategy, growth tactics, এবং founder insights — যা তোমাকে এগিয়ে রাখবে।
+    Every week. Straight to your inbox.
+  </p>
+  <div class="signup-form">
+    <input type="email" id="hero-email" placeholder="তোমার email দাও..." />
+    <button onclick="handleSubscribe('hero-email', 'hero-success')">Subscribe →</button>
+  </div>
+  <p class="success-msg" id="hero-success">🎉 স্বাগতম! তুমি subscribe করেছ।</p>
+  <p class="hero-meta">Free forever · No spam · Unsubscribe anytime</p>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">500+</div>
+    <div class="stat-label">Subscribers</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">12</div>
+    <div class="stat-label">Issues Published</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Weekly</div>
+    <div class="stat-label">Frequency</div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div>
+    <p class="about-label">About the newsletter</p>
+    <h2 class="about-title">কেন The Growth Founder?</h2>
+    <div class="gold-line"></div>
+    <p class="about-text">
+      This newsletter is for builders, dreamers, and doers — founders who want to grow not just their business, but themselves.
+    </p>
+    <p class="about-text">
+      প্রতি সপ্তাহে আমি share করি real strategies, honest lessons, এবং actionable ideas — যা তুমি সাথে সাথে apply করতে পারবে।
+    </p>
+    <p class="about-text">
+      No fluff. No filler. Just growth.
+    </p>
+  </div>
+  <div class="about-visual">
+    <div class="about-monogram">TGF</div>
+  </div>
+</section>
+
+<!-- PAST ISSUES -->
+<section id="issues">
+  <div class="section-header">
+    <p class="section-label">Archive</p>
+    <h2 class="section-title">Past Issues</h2>
+  </div>
+  <div class="issues-grid">
+    <a class="issue-card" href="#">
+      <div class="issue-num">Issue #012</div>
+      <div class="issue-title">The One Metric That Actually Matters</div>
+      <div class="issue-excerpt">Most founders track everything — and grow nothing. Here's the single number that changed how I run my business.</div>
+      <div class="issue-date">March 20, 2025</div>
+    </a>
+    <a class="issue-card" href="#">
+      <div class="issue-num">Issue #011</div>
+      <div class="issue-title">কঠিন সময়ে কীভাবে focused থাকবে</div>
+      <div class="issue-excerpt">Chaos is the default state of building something new. এই framework তোমাকে calm রাখবে যখন সব এলোমেলো মনে হবে।</div>
+      <div class="issue-date">March 13, 2025</div>
+    </a>
+    <a class="issue-card" href="#">
+      <div class="issue-num">Issue #010</div>
+      <div class="issue-title">Distribution Beats Product Every Time</div>
+      <div class="issue-excerpt">A great product with no audience is a tree falling in an empty forest. Here's how to build the audience first.</div>
+      <div class="issue-date">March 6, 2025</div>
+    </a>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta" id="subscribe">
+  <h2>Ready to <em>grow</em>?</h2>
+  <p>Join hundreds of founders who read The Growth Founder every week.</p>
+  <div class="cta-form">
+    <input type="email" id="cta-email" placeholder="your@email.com" />
+    <button onclick="handleSubscribe('cta-email', 'cta-success')">Join Free →</button>
+  </div>
+  <p class="success-msg" id="cta-success">🎉 স্বাগতম! তুমি subscribe করেছ।</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">The Growth Founder</span>
+  <span>© 2025 · Built with ❤️</span>
+  <span><a href="mailto:hello@thegrowthfounder.com">hello@thegrowthfounder.com</a></span>
+</footer>
+
+<script>
+  function handleSubscribe(inputId, successId) {
+    const input = document.getElementById(inputId);
+    const success = document.getElementById(successId);
+    const email = input.value.trim();
+
+    if (!email || !email.includes('@')) {
+      input.style.borderLeft = '3px solid #e05c5c';
+      input.focus();
+      return;
+    }
+
+    // TODO: Replace with Resend API call
+    console.log('New subscriber:', email);
+
+    input.parentElement.style.display = 'none';
+    success.style.display = 'block';
+  }
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+
+</body>
+</html>
