@@ -1,2 +1,11 @@
 # newsletter
 My personal newsletter website
+[
+  {
+    "id": 1,
+    "name": "Premium Business Notebook",
+    "price": 550,
+    "image": "product1.jpg",
+    "description": "High-quality minimalist notebook for entrepreneurs."
+  }
+]
