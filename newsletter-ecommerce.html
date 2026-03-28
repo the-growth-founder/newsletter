@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Newsletter & Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #1a1208;
+      --cream: #f5f0e8;
+      --paper: #faf7f2;
+      --gold: #c8973a;
+      --gold-light: #e8c97a;
+      --rust: #b8442a;
+      --sage: #4a6741;
+      --border: #d4c9b0;
+      --shadow: rgba(26,18,8,0.12);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--gold);
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 1rem;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    nav { display: flex; gap: 0.25rem; }
+    nav a {
+      color: var(--cream);
+      text-decoration: none;
+      padding: 0.4rem 0.9rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    nav a:hover, nav a.active { background: var(--gold); color: var(--ink); }
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      padding: 0.4rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .cart-btn:hover { background: var(--gold); color: var(--ink); }
+    .cart-count {
+      position: absolute;
+      top: -8px; right: -8px;
+      background: var(--rust);
+      color: #fff;
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      font-size: 0.7rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      display: none;
+    }
+    .cart-count.show { display: flex; }
+
+    /* ── PAGES ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── NEWSLETTER ── */
+    #page-newsletter {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .nl-hero {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
+    .nl-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .nl-hero p { color: #666; font-size: 1.05rem; }
+    .issue-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+    }
+    .nl-articles { display: flex; flex-direction: column; gap: 2rem; }
+    .article-card {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: box-shadow 0.2s;
+    }
+    .article-card:hover { box-shadow: 0 4px 20px var(--shadow); }
+    .article-thumb {
+      width: 120px; height: 90px;
+      border-radius: 4px;
+      object-fit: cover;
+      background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .article-meta { font-size: 0.75rem; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .article-excerpt { font-size: 0.9rem; color: #555; line-height: 1.6; }
+    .read-more { margin-top: 0.75rem; color: var(--rust); font-weight: 600; font-size: 0.85rem; cursor: pointer; }
+
+    /* ── SHOP ── */
+    #page-shop { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; }
+    .shop-header { margin-bottom: 2rem; }
+    .shop-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; }
+    .shop-controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1; min-width: 200px;
+      display: flex;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border: none;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      background: transparent;
+    }
+    .search-box button {
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 0 1rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .search-box button:hover { background: var(--gold); color: var(--ink); }
+    .filter-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pill {
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .pill.active, .pill:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: box-shadow 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+    .product-card:hover { box-shadow: 0 8px 30px var(--shadow); transform: translateY(-3px); }
+    .product-img {
+      width: 100%; height: 180px;
+      background: var(--cream);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .product-info { padding: 1rem; }
+    .product-cat { font-size: 0.72rem; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+    .product-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin: 0.25rem 0 0.5rem; }
+    .product-price { font-size: 1.1rem; font-weight: 700; color: var(--rust); }
+    .product-old-price { font-size: 0.85rem; color: #999; text-decoration: line-through; margin-left: 0.4rem; }
+    .add-to-cart-btn {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.55rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .add-to-cart-btn:hover { background: var(--gold); color: var(--ink); }
+    .no-results { text-align: center; padding: 3rem; color: #888; font-size: 1.1rem; }
+
+    /* ── CART MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(26,18,8,0.5);
+      z-index: 200;
+      display: none;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    .modal-overlay.show { display: flex; }
+    .cart-panel {
+      width: 100%; max-width: 420px;
+      height: 100vh;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .cart-panel-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .cart-panel-header h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+    .close-btn { background: none; border: none; color: var(--cream); font-size: 1.5rem; cursor: pointer; line-height: 1; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .cart-empty { text-align: center; padding: 3rem 1rem; color: #888; }
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .cart-item-emoji { font-size: 2rem; width: 50px; text-align: center; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; font-size: 0.9rem; }
+    .cart-item-price { color: var(--rust); font-weight: 700; font-size: 0.9rem; }
+    .cart-item-qty {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+    .qty-btn {
+      width: 24px; height: 24px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      transition: all 0.15s;
+    }
+    .qty-btn:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+    .qty-num { font-weight: 600; min-width: 20px; text-align: center; }
+    .remove-item { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1.1rem; transition: color 0.2s; }
+    .remove-item:hover { color: var(--rust); }
+    .cart-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 2px solid var(--border);
+      background: var(--cream);
+    }
+    .cart-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; }
+    .checkout-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .checkout-btn:hover { background: var(--ink); color: var(--cream); }
+
+    /* ── CHECKOUT ── */
+    #page-checkout { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem; }
+    #page-checkout h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin-bottom: 2rem; }
+    .checkout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    @media (max-width: 600px) { .checkout-grid { grid-template-columns: 1fr; } }
+    .checkout-section { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; }
+    .checkout-section h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1.2rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: #555; margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: var(--paper);
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+    .order-summary-items { max-height: 200px; overflow-y: auto; margin-bottom: 1rem; }
+    .summary-item { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.88rem; border-bottom: 1px solid var(--border); }
+    .summary-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1rem; padding-top: 0.75rem; }
+    .place-order-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--sage);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background 0.2s;
+    }
+    .place-order-btn:hover { background: var(--ink); }
+    .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--rust); font-weight: 600; cursor: pointer; margin-bottom: 1.5rem; font-size: 0.9rem; }
+
+    /* ── SUCCESS ── */
+    #page-success { max-width: 500px; margin: 0 auto; padding: 5rem 2rem; text-align: center; }
+    .success-icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    #page-success h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; margin-bottom: 1rem; color: var(--sage); }
+    #page-success p { color: #666; line-height: 1.7; margin-bottom: 2rem; }
+    .continue-btn {
+      padding: 0.75rem 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .continue-btn:hover { background: var(--gold); color: var(--ink); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0.75rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-left: 4px solid var(--gold);
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">📰 The Daily Read</div>
+    <nav>
+      <a onclick="showPage('newsletter')" id="nav-newsletter" class="active">Newsletter</a>
+      <a onclick="showPage('shop')" id="nav-shop">Shop</a>
+    </nav>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart
+      <span class="cart-count" id="cart-count">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- NEWSLETTER PAGE -->
+<div id="page-newsletter" class="page active">
+  <div id="page-newsletter-inner">
+    <div class="nl-hero">
+      <span class="issue-badge">Issue #47 · March 2026</span>
+      <h1>Ideas Worth<br/>Reading Today</h1>
+      <p>Curated stories in tech, culture & creativity — every week.</p>
+    </div>
+    <div class="nl-articles">
+      <div class="article-card">
+        <div class="article-thumb">🤖</div>
+        <div>
+          <div class="article-meta">Technology</div>
+          <div class="article-title">AI এর নতুন যুগ: আমরা কোথায় যাচ্ছি?</div>
+          <div class="article-excerpt">কৃত্রিম বুদ্ধিমত্তা এখন আর শুধু গবেষণাগারে সীমাবদ্ধ নয়। রোজকার জীবনে AI কীভাবে বদলে দিচ্ছে আমাদের কাজ, সম্পর্ক এবং সৃজনশীলতা।</div>
+          <div class="read-more">পড়ুন →</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-thumb">🌿</div>
+        <div>
+          <div class="article-meta">Culture</div>
+          <div class="article-title">Slow Living: ধীর জীবনের সৌন্দর্য</div>
+          <div class="article-excerpt">দ্রুতগতির পৃথিবীতে একটু থেমে শ্বাস নেওয়ার কথা বলছেন অনেকে। Slow movement কী এবং কেন এটি এত জনপ্রিয় হচ্ছে?</div>
+          <div class="read-more">পড়ুন →</div>
+        </div>
+      </div>
+      <div class="article-card">
+        <div class="article-thumb">📚</div>
+        <div>
+          <div class="article-meta">Books</div>
+          <div class="article-title">এই মাসে যে ৫টি বই পড়বেন</div>
+          <div class="article-excerpt">নন-ফিকশন থেকে উপন্যাস, এই মাসের সেরা পাঁচটি বইয়ের সংক্ষিপ্ত পরিচয় ও কেন পড়বেন তার কারণ।</div>
+          <div class="read-more">পড়ুন →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHOP PAGE -->
+<div id="page-shop" class="page">
+  <div style="max-width:1200px;margin:0 auto;padding:2.5rem 2rem;">
+    <div class="shop-header">
+      <h2>📦 Our Shop</h2>
+      <div class="shop-controls">
+        <div class="search-box">
+          <input type="text" id="search-input" placeholder="পণ্য খুঁজুন..." oninput="filterProducts()"/>
+          <button>🔍</button>
+        </div>
+        <div class="filter-pills" id="filter-pills">
+          <span class="pill active" onclick="setFilter('all', this)">সব</span>
+          <span class="pill" onclick="setFilter('books', this)">📚 বই</span>
+          <span class="pill" onclick="setFilter('accessories', this)">🎒 Accessories</span>
+          <span class="pill" onclick="setFilter('digital', this)">💻 Digital</span>
+          <span class="pill" onclick="setFilter('lifestyle', this)">🌿 Lifestyle</span>
+        </div>
+      </div>
+    </div>
+    <div class="product-grid" id="product-grid"></div>
+    <div class="no-results" id="no-results" style="display:none;">কোনো পণ্য পাওয়া যায়নি 😔</div>
+  </div>
+</div>
+
+<!-- CHECKOUT PAGE -->
+<div id="page-checkout" class="page">
+  <span class="back-link" onclick="showPage('shop')">← Shop-এ ফিরে যান</span>
+  <h2>🧾 Checkout</h2>
+  <div class="checkout-grid">
+    <div>
+      <div class="checkout-section">
+        <h3>📍 Delivery Info</h3>
+        <div class="form-group"><label>পুরো নাম</label><input type="text" placeholder="আপনার নাম"/></div>
+        <div class="form-group"><label>ইমেইল</label><input type="email" placeholder="email@example.com"/></div>
+        <div class="form-group"><label>ফোন নম্বর</label><input type="tel" placeholder="০১XXXXXXXXX"/></div>
+        <div class="form-group"><label>ঠিকানা</label><input type="text" placeholder="বাড়ি / রোড / এলাকা"/></div>
+        <div class="form-group">
+          <label>শহর</label>
+          <select>
+            <option>ঢাকা</option><option>চট্টগ্রাম</option><option>সিলেট</option>
+            <option>রাজশাহী</option><option>খুলনা</option>
+          </select>
+        </div>
+      </div>
+      <div class="checkout-section" style="margin-top:1.5rem;">
+        <h3>💳 Payment</h3>
+        <div class="form-group">
+          <label>Payment Method</label>
+          <select>
+            <option>bKash</option><option>Nagad</option>
+            <option>Credit / Debit Card</option><option>Cash on Delivery</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Mobile Number / Card</label><input type="text" placeholder="বিস্তারিত দিন"/></div>
+      </div>
+    </div>
+    <div>
+      <div class="checkout-section" id="checkout-summary">
+        <h3>🛒 Order Summary</h3>
+        <div class="order-summary-items" id="summary-items"></div>
+        <div class="summary-total"><span>মোট</span><span id="summary-total-price">৳0</span></div>
+      </div>
+    </div>
+  </div>
+  <button class="place-order-btn" onclick="placeOrder()">✅ Order দিন</button>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div id="page-success" class="page">
+  <div class="success-icon">🎉</div>
+  <h2>Order Confirmed!</h2>
+  <p>আপনার order সফলভাবে place হয়েছে। শীঘ্রই আপনার সাথে যোগাযোগ করা হবে।<br/>ধন্যবাদ আমাদের shop থেকে কেনাকাটা করার জন্য! ❤️</p>
+  <button class="continue-btn" onclick="showPage('newsletter')">← Newsletter-এ ফিরুন</button>
+</div>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cart-modal" onclick="closeCartOutside(event)">
+  <div class="cart-panel">
+    <div class="cart-panel-header">
+      <h3>🛒 আপনার Cart</h3>
+      <button class="close-btn" onclick="closeCart()">×</button>
+    </div>
+    <div class="cart-items" id="cart-items-list">
+      <div class="cart-empty">আপনার cart খালি 🛒</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>মোট</span><span id="cart-total">৳0</span></div>
+      <button class="checkout-btn" onclick="goCheckout()">Checkout করুন →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  const products = [
+    { id:1, name:"Deep Work", emoji:"📗", cat:"books", price:450, old:600, desc:"Cal Newport-এর বিখ্যাত বই" },
+    { id:2, name:"Canvas Tote Bag", emoji:"🎒", cat:"accessories", price:380, old:null, desc:"Eco-friendly ক্যানভাস ব্যাগ" },
+    { id:3, name:"Notion Template Pack", emoji:"💻", cat:"digital", price:299, old:499, desc:"10টি premium Notion template" },
+    { id:4, name:"Bamboo Pen Holder", emoji:"🌿", cat:"lifestyle", price:320, old:null, desc:"টেকসই বাঁশের কলম স্ট্যান্ড" },
+    { id:5, name:"Atomic Habits", emoji:"📘", cat:"books", price:420, old:550, desc:"James Clear-এর bestseller" },
+    { id:6, name:"Leather Notebook", emoji:"📒", cat:"accessories", price:650, old:null, desc:"Genuine leather A5 নোটবুক" },
+    { id:7, name:"Font Bundle", emoji:"🔤", cat:"digital", price:199, old:399, desc:"50+ premium Bengali & English fonts" },
+    { id:8, name:"Soy Candle Set", emoji:"🕯️", cat:"lifestyle", price:580, old:700, desc:"3টি সুগন্ধি soy candle" },
+    { id:9, name:"The Almanack", emoji:"📙", cat:"books", price:390, old:null, desc:"Naval Ravikant-এর wisdom collection" },
+    { id:10, name:"Wireless Earbuds Case", emoji:"🎧", cat:"accessories", price:890, old:1200, desc:"Silicone protective case" },
+    { id:11, name:"Productivity Planner PDF", emoji:"📅", cat:"digital", price:149, old:249, desc:"Printable weekly planner" },
+    { id:12, name:"Ceramic Mug", emoji:"☕", cat:"lifestyle", price:450, old:null, desc:"হাতে আঁকা ceramic mug" },
+  ];
+
+  let cart = [];
+  let activeFilter = 'all';
+
+  function renderProducts() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const grid = document.getElementById('product-grid');
+    const noRes = document.getElementById('no-results');
+    const filtered = products.filter(p => {
+      const matchCat = activeFilter === 'all' || p.cat === activeFilter;
+      const matchQuery = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+      return matchCat && matchQuery;
+    });
+    if (filtered.length === 0) { grid.innerHTML=''; noRes.style.display='block'; return; }
+    noRes.style.display='none';
+    grid.innerHTML = filtered.map(p => `
+      <div class="product-card">
+        <div class="product-img">${p.emoji}</div>
+        <div class="product-info">
+          <div class="product-cat">${p.cat}</div>
+          <div class="product-name">${p.name}</div>
+          <div style="margin-top:0.25rem;">
+            <span class="product-price">৳${p.price}</span>
+            ${p.old ? `<span class="product-old-price">৳${p.old}</span>` : ''}
+          </div>
+          <div style="font-size:0.8rem;color:#888;margin-top:0.25rem;">${p.desc}</div>
+          <button class="add-to-cart-btn" onclick="addToCart(${p.id})">+ Cart-এ যোগ করুন</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function setFilter(cat, el) {
+    activeFilter = cat;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    renderProducts();
+  }
+
+  function filterProducts() { renderProducts(); }
+
+  function addToCart(id) {
+    const p = products.find(x => x.id === id);
+    const existing = cart.find(x => x.id === id);
+    if (existing) existing.qty++;
+    else cart.push({ ...p, qty: 1 });
+    updateCartUI();
+    showToast(`"${p.name}" cart-এ যোগ হয়েছে! 🛒`);
+  }
+
+  function updateCartUI() {
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const count = cart.reduce((s,i) => s + i.qty, 0);
+    const cc = document.getElementById('cart-count');
+    cc.textContent = count;
+    cc.classList.toggle('show', count > 0);
+    document.getElementById('cart-total').textContent = `৳${total}`;
+    const list = document.getElementById('cart-items-list');
+    if (cart.length === 0) { list.innerHTML = '<div class="cart-empty">আপনার cart খালি 🛒</div>'; return; }
+    list.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-emoji">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-price">৳${item.price * item.qty}</div>
+          <div class="cart-item-qty">
+            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          </div>
+        </div>
+        <button class="remove-item" onclick="removeItem(${item.id})" title="Remove">🗑</button>
+      </div>
+    `).join('');
+  }
+
+  function changeQty(id, delta) {
+    const item = cart.find(x => x.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+    updateCartUI();
+  }
+
+  function removeItem(id) { cart = cart.filter(x => x.id !== id); updateCartUI(); }
+
+  function openCart() { document.getElementById('cart-modal').classList.add('show'); }
+  function closeCart() { document.getElementById('cart-modal').classList.remove('show'); }
+  function closeCartOutside(e) { if (e.target === document.getElementById('cart-modal')) closeCart(); }
+
+  function goCheckout() {
+    if (cart.length === 0) { showToast('Cart খালি! কিছু যোগ করুন।'); return; }
+    closeCart();
+    renderCheckoutSummary();
+    showPage('checkout');
+  }
+
+  function renderCheckoutSummary() {
+    const items = document.getElementById('summary-items');
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    items.innerHTML = cart.map(i => `
+      <div class="summary-item">
+        <span>${i.emoji} ${i.name} × ${i.qty}</span>
+        <span>৳${i.price * i.qty}</span>
+      </div>
+    `).join('');
+    document.getElementById('summary-total-price').textContent = `৳${total}`;
+  }
+
+  function placeOrder() {
+    cart = [];
+    updateCartUI();
+    showPage('success');
+  }
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // Init
+  renderProducts();
+</script>
+</body>
+</html>
